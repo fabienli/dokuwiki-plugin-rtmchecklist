@@ -148,7 +148,7 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
             }
             $username = $_SERVER['REMOTE_USER'];
             // make sure dir RTMCHECKLIST_ROOTDIR is created
-            mkdir(RTMCHECKLIST_ROOTDIR, 0700);
+            mkdir(RTMCHECKLIST_ROOTDIR.'conf', 0700);
             //write file: RTMCHECKLIST_ROOTDIR.'conf/profile_'.$username.'.php'
             $fp = fopen(RTMCHECKLIST_ROOTDIR.'conf/profile_'.$username.'.php', 'w');
             fwrite($fp, "<?php\n");
