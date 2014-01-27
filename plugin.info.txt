@@ -1,0 +1,7 @@
+base   rtmchecklist
+author Fabien Lisiecki
+email  fabien.lisiecki@gmail.com
+date   2013-12-07
+name   RTM Checklist
+desc   Enables to send a checklist to an RTM account
+url    http://www.dokuwiki.org/plugin:rtmchecklist
