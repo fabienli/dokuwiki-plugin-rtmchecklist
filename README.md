@@ -1,6 +1,10 @@
 rtmchecklist
 ============
-create a list using a tag: <rtmchecklist>, each line before the ending tag </rtmchecklist> will be a task.
+This is a plugin for dokuwiki (https://www.dokuwiki.org/plugins).
+
+Current version is beta: use at your own risk !
+
+Create a list using a tag: <rtmchecklist>, each line before the ending tag </rtmchecklist> will be a task.
 
 Sample:
  <rtmchecklist>
