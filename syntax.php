@@ -87,7 +87,7 @@ class syntax_plugin_rtmchecklist extends DokuWiki_Syntax_Plugin {
     * @see render()
     * @static
     */
-    function handle($match, $state, $pos, &$handler){
+    function handle($match, $state, $pos, Doku_Handler $handler){
         $tasks = array();
         $start = false;
         $end   = false;
@@ -135,7 +135,7 @@ class syntax_plugin_rtmchecklist extends DokuWiki_Syntax_Plugin {
     * @public
     * @see handle()
     */
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         if($mode == 'xhtml'){
             if($data['start'])
             {
