@@ -25,7 +25,8 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
   function register(Doku_Event_Handler $controller) {
     $controller->register_hook('TPL_ACT_UNKNOWN', 'BEFORE', $this, 'handleTplActUnknown', array());
     $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handleActPreprocess', array());
-    $controller->register_hook('HTML_UPDATEPROFILEFORM_OUTPUT', 'BEFORE', $this, 'handle_profile_form', array());
+    $controller->register_hook('HTML_UPDATEPROFILEFORM_OUTPUT', 'BEFORE', $this, 'handle_profile_form', array()); //old form
+    $controller->register_hook('FORM_UPDATEPROFILE_OUTPUT', 'BEFORE', $this, 'handle_profile_form', array()); //new form
   }
 
     /*
@@ -33,7 +34,7 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
      */
     function handle_profile_form(&$event, $param){
             global $INFO;
-            
+
             if (empty($_SERVER['REMOTE_USER'])) {
                 return; // Not logged in
             }
@@ -58,23 +59,32 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
             $rtm_form.= '<input type="reset" value="Reset" class="button" />';
             $rtm_form.= '</fieldset>';
             $rtm_form.= '</div></form>';
-            $pos = $event->data->findElementByAttribute('type', 'reset');
-            $event->data->insertElement($pos+3, $rtm_form);
+
+            $form = $event->data;
+            if (is_a($form, \dokuwiki\Form\Form::class)) {
+              // new form, still using old HTML generated code instead of objects
+              $pos = $form->findPositionByAttribute('type', 'reset');
+              $form->addHTML($rtm_form, $pos);
+            } else {
+              // old form in html
+              $pos = $event->data->findElementByAttribute('type', 'reset');
+              $event->data->insertElement($pos+3, $rtm_form);
+            }
     }
-    
-    
+
+
   function handleActPreprocess(&$event, $param){
     if($event->data == 'plugin_rtmsend'){
         // Accept the action
         $event->preventDefault();
         $event->stopPropagation();
-        return; 
+        return;
     }
     else if($event->data == 'rtmemailregister') {
         // Accept the action
         $event->preventDefault();
         $event->stopPropagation();
-        return; 
+        return;
     }
     else {
         // nothing to do for us
@@ -84,13 +94,13 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
   }
 
     /**
-     * Hook for event TPL_ACT_UNKNOWN, action 
+     * Hook for event TPL_ACT_UNKNOWN, action
      */
     function handleTplActUnknown(&$event, $param) {
         if ($event->data == 'plugin_rtmsend') {
             global $INPUT; //available since release 2012-10-13 "Adora Belle"
             global $INFO;
-            
+
             $wikitext = "=== ".$this->getLang('Results')." ===\n";
             if(!checksecuritytoken()) {
                 return;
@@ -116,14 +126,14 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
             // send the mail
             if(mail_send($rtmEmail,
                          "", // no title
-                         $tasksList)) { 
+                         $tasksList)) {
                 $sendResult = true;
             }
-            
+
             // Accept the action
             $event->preventDefault();
             $event->stopPropagation();
-            
+
             // show final result
             if($sendResult)
                 $wikitext.= $this->getLang('checklist_sent');
@@ -137,7 +147,7 @@ class action_plugin_rtmchecklist extends DokuWiki_Action_Plugin {
         }
         else if($event->data == 'rtmemailregister') {
             global $INPUT; //available since release 2012-10-13 "Adora Belle"
-            
+
             if(!checksecuritytoken()) {
                 return;
             }
